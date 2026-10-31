@@ -1,0 +1,30 @@
+from langchain_google_genai import ChatGoogleGenerativeAI
+from dotenv import load_dotenv
+from langchain_core.prompts import PromptTemplate
+# use case i want to communicate two times with my llm
+# llm give me detail report on black hole as i get the report i want to send that eport back 
+# to llm to generate the summary for it
+
+load_dotenv()
+
+model = ChatGoogleGenerativeAI(model = "gemini-3.5-flash-lite")
+
+template1 = PromptTemplate(
+    template = "Write a detailed report on {topic}",
+    input_variables=['topic']
+)
+
+template2 = PromptTemplate(
+    template = "Write a summary on the followed text. \n {text}"
+)
+
+
+prompt1 = template1.invoke({'topic':'Black hole'})
+
+result = model.invoke(prompt1)
+
+prompt2 = template2.invoke({'text':result.content})
+
+new_result = model.invoke(prompt2)
+
+print(new_result.content[0])
